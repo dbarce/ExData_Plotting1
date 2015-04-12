@@ -1,0 +1,17 @@
+#plot3.R
+data <- read.csv("household_power_consumption.txt", sep=";",na.strings="?",colClasses=c("character","character","numeric","numeric","numeric","numeric","numeric","numeric","numeric"))
+data$Date <- as.Date(data$Date,"%d/%m/%Y")
+#datatimef  <- strftime(datatime,format="",usetz=FALSE)
+#data$Datetime <- paste(datatimef)
+subdata <- data[data$Date >= "2007-02-01" & data$Date <="2007-02-02", ]
+datatime <- strptime(paste(subdata$Date,subdata$Time),"%Y-%m-%d %H:%M:%S")
+subdata$Datetime <- paste(datatime)
+subdata[[10]] <- as.POSIXct(subdata[[10]])
+subdata$day <- weekdays(subdata$Datetime)
+with(subdata,plot(Datetime,Sub_metering_1,type="n",ylab="Energy sub metering",xlab=""))
+with(subdata,lines(Datetime,Sub_metering_1,type="l",col="black"))
+with(subdata,lines(Datetime,Sub_metering_2,type="l",col="red"))
+with(subdata,lines(Datetime,Sub_metering_3,type="l",col="blue"))
+legend("topright",pch=1,col=c("black","red","blue"), legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+dev.copy(png,file="plot3.png")
+dev.off()
